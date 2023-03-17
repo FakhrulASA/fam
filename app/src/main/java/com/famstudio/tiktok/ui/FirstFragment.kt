@@ -50,6 +50,7 @@ class FirstFragment : Fragment() {
                     var intent: Intent =
                         Intent(requireContext(), DownloadAndViewerPage::class.java)
                     intent.putExtra("URL", it.data.play)
+                    intent.putExtra("NAME",it.data.title)
                     requireContext().startActivity(intent)
                 }, {
 

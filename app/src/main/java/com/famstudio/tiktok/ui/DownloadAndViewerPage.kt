@@ -1,12 +1,16 @@
 package com.famstudio.tiktok.ui
 
-import android.R
+import android.app.DownloadManager
+import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.util.Log
 import android.widget.MediaController
-import android.widget.VideoView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import com.famstudio.tiktok.databinding.ActivityDownloadAndViewerPageBinding
+import kotlin.math.log
 
 
 class DownloadAndViewerPage : AppCompatActivity() {
@@ -16,48 +20,38 @@ class DownloadAndViewerPage : AppCompatActivity() {
         binding = ActivityDownloadAndViewerPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val videoView = binding.videoView
-
-        // Uri object to refer the
-        // resource from the videoUrl
-
-        // Uri object to refer the
-        // resource from the videoUrl
+        val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
         val uri: Uri = Uri.parse(intent.extras!!.get("URL").toString())
 
-        // sets the resource from the
-        // videoUrl to the videoView
-
-        // sets the resource from the
-        // videoUrl to the videoView
         videoView.setVideoURI(uri)
 
-        // creating object of
-        // media controller class
-
-        // creating object of
-        // media controller class
         val mediaController = MediaController(this)
 
-        // sets the anchor view
-        // anchor view for the videoView
-
-        // sets the anchor view
-        // anchor view for the videoView
         mediaController.setAnchorView(videoView)
 
-        // sets the media player to the videoView
-
-        // sets the media player to the videoView
         mediaController.setMediaPlayer(videoView)
 
-        // sets the media controller to the videoView
-
-        // sets the media controller to the videoView
         videoView.setMediaController(mediaController)
 
-        // starts the video
 
-        // starts the video
         videoView.start()
+
+        val url = intent.extras!!.get("URL").toString()
+        val title = intent.extras!!.get("NAME").toString()
+
+
+
+        binding.button5.setOnClickListener {
+
+            val request = DownloadManager.Request(url.toUri())
+                .setMimeType("video/mp4")
+                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setTitle(title)
+                .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, title)
+            downloadManager.enqueue(request)
+        }
+
     }
+
 }
