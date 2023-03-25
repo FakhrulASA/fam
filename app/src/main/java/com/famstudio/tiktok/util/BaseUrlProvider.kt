@@ -1,7 +1,13 @@
 package com.famstudio.tiktok.util
 
+import android.content.ContentResolver
+import android.content.Context
+import android.net.Uri
+import android.webkit.MimeTypeMap
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import java.util.*
+
 
 object BaseUrlProvider {
     fun provideBaseURL():String{
@@ -18,5 +24,21 @@ object BaseUrlProvider {
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient = OkHttpClient.Builder().addInterceptor(interceptor).build()
         return client;
+    }
+    fun getMimeType(uri: Uri,context:Context): String? {
+        var mimeType: String? = null
+        mimeType = if (ContentResolver.SCHEME_CONTENT == uri.getScheme()) {
+            val cr: ContentResolver = context.contentResolver
+            cr.getType(uri)
+        } else {
+            val fileExtension = MimeTypeMap.getFileExtensionFromUrl(
+                uri
+                    .toString()
+            )
+            MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                fileExtension.lowercase(Locale.getDefault())
+            )
+        }
+        return mimeType
     }
 }
