@@ -19,6 +19,8 @@ class DownloadAndViewerPage : AppCompatActivity() {
     private var name: String = ""
     private var id: String = ""
     private var title: String = ""
+    private var duration: String = ""
+    private var size: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +39,15 @@ class DownloadAndViewerPage : AppCompatActivity() {
         name = sh.getString(PROFILE_NAME, "").toString()
         id = sh.getString(PROFILE_ID, "").toString()
         title = sh.getString(VIDEO_TITLE, "").toString()
+        duration = sh.getString(DURATION, "").toString()
+        size = sh.getString(SIZE, "").toString()
+
+        binding.titleTxt.text = title
+        binding.durationText.text ="Duration: " + duration+ "seconds"
+        binding.sizeText.text ="Play Count: " + duration
+        binding.profileIdText.text ="Author Id: " +id
+        binding.nameText.text ="Name: "+ name
+
         val videoView = binding.videoView
         videoView.setVideoURI(url.toUri())
         val mediaController = MediaController(this@DownloadAndViewerPage)
@@ -44,6 +55,7 @@ class DownloadAndViewerPage : AppCompatActivity() {
         mediaController.setMediaPlayer(videoView)
         videoView.setMediaController(mediaController)
         videoView.start()
+
         binding.button5.setOnClickListener {
             var androidDownloader = AndroidDownloader(this, title)
             androidDownloader.downloadVideoFile(url)

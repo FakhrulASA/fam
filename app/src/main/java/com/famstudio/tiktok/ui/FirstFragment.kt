@@ -9,6 +9,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.famstudio.tiktok.databinding.FragmentFirstBinding
@@ -45,7 +46,7 @@ class FirstFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        var list = getAllMedia()
+
         var sharedPreferences: SharedPreferences =
             requireContext().getSharedPreferences("MySharedPref", MODE_PRIVATE)
 
@@ -59,7 +60,6 @@ class FirstFragment : Fragment() {
             }
         }
         binding.button2.setOnClickListener {
-
             vm.getWeather(GetVideoRequestModel(binding.textView.text.toString()), { data ->
                 url = data.data.play
                 audioUrl = data.data.music
@@ -68,10 +68,12 @@ class FirstFragment : Fragment() {
                 title = data.data.title
                 myEdit.putString(VIDEO_URL, data.data.play)
                 myEdit.putString(AUDIO_URL, data.data.music)
-                myEdit.putString(VIDEO_TITLE, data.data.music)
-                myEdit.putString(PROFILE_NAME, data.data.music)
-                myEdit.putString(PROFILE_AVATAR, data.data.music)
-                myEdit.putString(PROFILE_ID, data.data.music)
+                myEdit.putString(VIDEO_TITLE, data.data.title)
+                myEdit.putString(PROFILE_NAME, data.data.author.nickname)
+                myEdit.putString(PROFILE_AVATAR, data.data.author.avatar)
+                myEdit.putString(PROFILE_ID, data.data.author.id)
+                myEdit.putString(DURATION, data.data.duration.toString())
+                myEdit.putString(SIZE, data.data.play_count.toString())
                 myEdit.apply()
                 startActivity(Intent(requireContext(), DownloadAndViewerPage::class.java))
             }, {
@@ -81,35 +83,14 @@ class FirstFragment : Fragment() {
                 myEdit.putString(PROFILE_NAME, "")
                 myEdit.putString(PROFILE_AVATAR, "")
                 myEdit.putString(PROFILE_ID, "")
-
+                myEdit.putString(DURATION, "")
+                myEdit.putString(SIZE, "")
+                myEdit.apply()
             })
 
         }
     }
-    fun getAllMedia(): ArrayList<String?>? {
-        val videoItemHashSet: HashSet<String> = HashSet()
-        val projection = arrayOf(
-            MediaStore.Video.VideoColumns.DATA,
-            MediaStore.Video.Media.DISPLAY_NAME
-        )
-        val cursor: Cursor? = requireContext().contentResolver.query(
-            MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-            projection,
-            null,
-            null,
-            null
-        )
-        try {
-            cursor!!.moveToFirst()
-            do {
-                videoItemHashSet.add(cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)))
-            } while (cursor.moveToNext())
-            cursor.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        return ArrayList(videoItemHashSet)
-    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
