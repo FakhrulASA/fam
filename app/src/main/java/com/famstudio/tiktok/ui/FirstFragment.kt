@@ -54,9 +54,9 @@ class FirstFragment : Fragment() {
         var myEdit = sharedPreferences.edit()
         vm.isLoading.observe(requireActivity()) {
             if (it) {
-                binding.progressBar.visibility = View.VISIBLE
+
             } else {
-                binding.progressBar.visibility = View.GONE
+
             }
         }
         binding.button2.setOnClickListener {
