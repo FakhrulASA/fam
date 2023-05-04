@@ -56,12 +56,12 @@ class DownloadAndViewerPage : AppCompatActivity() {
         videoView.setMediaController(mediaController)
         videoView.start()
 
-        binding.button5.setOnClickListener {
+        binding.button6.setOnClickListener {
             var androidDownloader = AndroidDownloader(this, title)
             androidDownloader.downloadVideoFile(url)
         }
 
-        binding.button.setOnClickListener {
+        binding.button8.setOnClickListener {
             var androidDownloader = AndroidDownloader(this@DownloadAndViewerPage, title)
 
             androidDownloader.downloadAudioFile(audioUrl)
