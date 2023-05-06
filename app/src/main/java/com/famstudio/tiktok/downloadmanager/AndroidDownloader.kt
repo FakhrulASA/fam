@@ -14,7 +14,7 @@ class AndroidDownloader(
     private val downloadManager = context.getSystemService(DownloadManager::class.java)
 
     override fun downloadAudioFile(url: String): Long {
-        val request = DownloadManager.Request(url.toUri())
+        val request = DownloadManager.Request(url.replace("\\", "").trim().toUri())
             .setMimeType("audio/*")
             .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
@@ -23,7 +23,7 @@ class AndroidDownloader(
         return downloadManager.enqueue(request)
     }
     override fun downloadVideoFile(url: String): Long {
-        val request = DownloadManager.Request(url.toUri())
+        val request = DownloadManager.Request(url.replace("\\", "").trim().toUri())
             .setMimeType("video/*")
             .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI)
             .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)

@@ -1,8 +1,10 @@
 package com.famstudio.tiktok.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.MediaController
+import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
@@ -22,6 +24,16 @@ class DownloadAndViewerPage : AppCompatActivity() {
     private var duration: String = ""
     private var size: String = ""
 
+    companion object{
+        const val INFO = ""
+         class VideoInfo(
+
+        ){
+             var url:String=""
+             var name: String=""
+             var duration:String=""
+         }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDownloadAndViewerPageBinding.inflate(layoutInflater)
@@ -57,13 +69,16 @@ class DownloadAndViewerPage : AppCompatActivity() {
         videoView.start()
 
         binding.button6.setOnClickListener {
+            Toast.makeText(this,url,Toast.LENGTH_LONG).show()
+            Log.d("MATCHES__URAL",url)
             var androidDownloader = AndroidDownloader(this, title)
-            androidDownloader.downloadVideoFile(url)
+            androidDownloader.downloadVideoFile(VideoInfo().url)
         }
 
         binding.button8.setOnClickListener {
             var androidDownloader = AndroidDownloader(this@DownloadAndViewerPage, title)
-
+            Toast.makeText(this,audioUrl,Toast.LENGTH_LONG).show()
+            Log.d("MATCHES__URAL",audioUrl)
             androidDownloader.downloadAudioFile(audioUrl)
         }
     }

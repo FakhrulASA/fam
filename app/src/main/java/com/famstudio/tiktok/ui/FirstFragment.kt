@@ -1,11 +1,11 @@
 package com.famstudio.tiktok.ui
 
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.SharedPreferences
-import android.database.Cursor
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +31,7 @@ class FirstFragment : Fragment() {
 
     private var _binding: FragmentFirstBinding? = null
 
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -52,6 +53,56 @@ class FirstFragment : Fragment() {
 
         // Creating an Editor object to edit(write to the file)
         var myEdit = sharedPreferences.edit()
+
+        binding.button4.setOnClickListener {
+            navigateToTiktok()
+        }
+        binding.imageView.setOnClickListener {
+            var getUrl = getClipboardData()
+            if (getUrl.isEmpty()) {
+                Toast.makeText(
+                    requireContext(),
+                    "Please paste a tiktok video url or video id",
+                    Toast.LENGTH_LONG
+                ).show()
+            } else {
+                vm.getWeather(GetVideoRequestModel(getUrl), { data ->
+                    url = data.data.play
+                    audioUrl = data.data.music
+                    name = data.data.author.nickname
+                    id = data.data.author.id
+                    title = data.data.title
+
+                    DownloadAndViewerPage.Companion.VideoInfo().apply {
+                        url = data.data.play
+                        name = data.data.author.nickname
+                        duration = data.data.duration.toString()
+                    }
+                    myEdit.putString(VIDEO_URL, data.data.play)
+                    myEdit.putString(AUDIO_URL, data.data.music)
+                    myEdit.putString(VIDEO_TITLE, data.data.title)
+                    myEdit.putString(PROFILE_NAME, data.data.author.nickname)
+                    myEdit.putString(PROFILE_AVATAR, data.data.author.avatar)
+                    myEdit.putString(PROFILE_ID, data.data.author.id)
+                    myEdit.putString(DURATION, data.data.duration.toString())
+                    myEdit.putString(SIZE, data.data.play_count.toString())
+                    myEdit.apply()
+                    startActivity(Intent(requireContext(), DownloadAndViewerPage::class.java))
+                }, {
+                    myEdit.putString(VIDEO_URL, "")
+                    myEdit.putString(AUDIO_URL, "")
+                    myEdit.putString(VIDEO_TITLE, "")
+                    myEdit.putString(PROFILE_NAME, "")
+                    myEdit.putString(PROFILE_AVATAR, "")
+                    myEdit.putString(PROFILE_ID, "")
+                    myEdit.putString(DURATION, "")
+                    myEdit.putString(SIZE, "")
+                    myEdit.apply()
+                })
+            }
+
+
+        }
         vm.isLoading.observe(requireActivity()) {
             if (it) {
 
@@ -60,33 +111,6 @@ class FirstFragment : Fragment() {
             }
         }
         binding.button2.setOnClickListener {
-            vm.getWeather(GetVideoRequestModel(binding.textView.text.toString()), { data ->
-                url = data.data.play
-                audioUrl = data.data.music
-                name = data.data.author.nickname
-                id = data.data.author.id
-                title = data.data.title
-                myEdit.putString(VIDEO_URL, data.data.play)
-                myEdit.putString(AUDIO_URL, data.data.music)
-                myEdit.putString(VIDEO_TITLE, data.data.title)
-                myEdit.putString(PROFILE_NAME, data.data.author.nickname)
-                myEdit.putString(PROFILE_AVATAR, data.data.author.avatar)
-                myEdit.putString(PROFILE_ID, data.data.author.id)
-                myEdit.putString(DURATION, data.data.duration.toString())
-                myEdit.putString(SIZE, data.data.play_count.toString())
-                myEdit.apply()
-                startActivity(Intent(requireContext(), DownloadAndViewerPage::class.java))
-            }, {
-                myEdit.putString(VIDEO_URL, "")
-                myEdit.putString(AUDIO_URL, "")
-                myEdit.putString(VIDEO_TITLE, "")
-                myEdit.putString(PROFILE_NAME, "")
-                myEdit.putString(PROFILE_AVATAR, "")
-                myEdit.putString(PROFILE_ID, "")
-                myEdit.putString(DURATION, "")
-                myEdit.putString(SIZE, "")
-                myEdit.apply()
-            })
 
         }
     }
@@ -94,5 +118,15 @@ class FirstFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun navigateToTiktok() {
+        val clipboard = (activity?.getSystemService(Context.CLIPBOARD_SERVICE)) as? ClipboardManager
+        val textToPaste = clipboard?.primaryClip?.getItemAt(0)?.text ?: return
+    }
+
+    fun getClipboardData(): String {
+        val clipboard = (activity?.getSystemService(Context.CLIPBOARD_SERVICE)) as? ClipboardManager
+        return clipboard?.primaryClip?.getItemAt(0)?.text as String
     }
 }
