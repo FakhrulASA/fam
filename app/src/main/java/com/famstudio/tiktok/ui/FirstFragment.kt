@@ -10,11 +10,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.famstudio.tiktok.databinding.FragmentFirstBinding
 import com.famstudio.tiktok.model.request.GetVideoRequestModel
 import com.famstudio.tiktok.util.*
+import com.google.android.material.navigation.NavigationView
 
 
 /**
@@ -30,7 +32,8 @@ class FirstFragment : Fragment() {
 
 
     private var _binding: FragmentFirstBinding? = null
-
+    private val drawer: DrawerLayout? = null
+    private val navigationView: NavigationView? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.

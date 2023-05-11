@@ -1,10 +1,15 @@
 package com.famstudio.tiktok.ui
 
 import android.os.Bundle
+import android.view.Gravity
+import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.core.view.WindowCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.famstudio.tiktok.R
 import com.famstudio.tiktok.databinding.ActivityMainBinding
@@ -20,16 +25,21 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val navView: BottomNavigationView = binding.bottom
-
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
-            )
-        )
-        navView.setupWithNavController(navController)
+        var drawerLayout: DrawerLayout = binding.drawerLayout
+        binding.imageView4.setOnClickListener {
+            if (drawerLayout.isDrawerOpen((GravityCompat.START))) {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        }
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.activity_main_drawer, menu)
+        return true
+    }
+
+
 }
