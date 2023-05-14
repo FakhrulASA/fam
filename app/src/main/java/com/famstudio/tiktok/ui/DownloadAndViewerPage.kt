@@ -71,12 +71,12 @@ class DownloadAndViewerPage : AppCompatActivity() {
         binding.button6.setOnClickListener {
             Toast.makeText(this,url,Toast.LENGTH_LONG).show()
             Log.d("MATCHES__URAL",url)
-            var androidDownloader = AndroidDownloader(this, title)
-            androidDownloader.downloadVideoFile(VideoInfo().url)
+            val androidDownloader = AndroidDownloader(this, title.replace("#","").replace(" ","")+".mp4")
+            androidDownloader.downloadVideoFile(url)
         }
 
         binding.button8.setOnClickListener {
-            var androidDownloader = AndroidDownloader(this@DownloadAndViewerPage, title)
+            val androidDownloader = AndroidDownloader(this@DownloadAndViewerPage, title.replace("#","").replace(" ","")+".mp3")
             Toast.makeText(this,audioUrl,Toast.LENGTH_LONG).show()
             Log.d("MATCHES__URAL",audioUrl)
             androidDownloader.downloadAudioFile(audioUrl)
