@@ -15,36 +15,6 @@
         android:layout_height="match_parent"
         android:padding="16dp">
 
-        <EditText
-            android:id="@+id/textView"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:visibility="gone"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/rounded_background_for_text"
-            android:padding="15dp"
-            android:hint="Tap to paste link"
-            android:ellipsize="end"
-            android:textColor="#898693"
-            app:layout_constraintEnd_toStartOf="@+id/button2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <ImageView
-            android:id="@+id/button2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/rounded_back_for_button"
-            android:padding="10dp"
-            android:visibility="gone"
-            android:src="@drawable/baseline_download_24"
-            app:layout_constraintBottom_toBottomOf="@+id/textView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cardView"

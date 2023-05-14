@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import android.widget.Toast
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -55,7 +56,6 @@ class FirstFragment : Fragment() {
 
         // Creating an Editor object to edit(write to the file)
         var myEdit = sharedPreferences.edit()
-
         binding.button4.setOnClickListener {
             navigateToTiktok()
         }
@@ -64,10 +64,10 @@ class FirstFragment : Fragment() {
         }
         binding.imageView.setOnClickListener {
             var getUrl = getClipboardData()
-            if (getUrl.isEmpty()) {
+            if (getUrl.isEmpty() || URLUtil.isValidUrl(getUrl) ) {
                 Toast.makeText(
                     requireContext(),
-                    "Please paste a tiktok video url or video id",
+                    "Please paste a valid tiktok video url!",
                     Toast.LENGTH_LONG
                 ).show()
             } else {
@@ -115,9 +115,6 @@ class FirstFragment : Fragment() {
 
             }
         }
-        binding.button2.setOnClickListener {
-
-        }
     }
 
     override fun onDestroyView() {
@@ -142,6 +139,7 @@ class FirstFragment : Fragment() {
 
     fun getClipboardData(): String {
         val clipboard = (activity?.getSystemService(Context.CLIPBOARD_SERVICE)) as? ClipboardManager
-        return clipboard?.primaryClip?.getItemAt(0)?.text as String
+        var data=  clipboard?.primaryClip?.getItemAt(0)?.text as String
+        return if(data.lowercase().contains("tiktok")) data else ""
     }
 }
