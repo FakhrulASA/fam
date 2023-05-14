@@ -1,10 +1,9 @@
 package com.famstudio.tiktok.ui
 
-import android.content.ClipboardManager
-import android.content.Context
+import android.app.DownloadManager
+import android.content.*
 import android.content.Context.MODE_PRIVATE
-import android.content.Intent
-import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -59,6 +58,9 @@ class FirstFragment : Fragment() {
 
         binding.button4.setOnClickListener {
             navigateToTiktok()
+        }
+        binding.videosCont.setOnClickListener {
+            startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
         }
         binding.imageView.setOnClickListener {
             var getUrl = getClipboardData()
@@ -124,8 +126,18 @@ class FirstFragment : Fragment() {
     }
 
     fun navigateToTiktok() {
-        val clipboard = (activity?.getSystemService(Context.CLIPBOARD_SERVICE)) as? ClipboardManager
-        val textToPaste = clipboard?.primaryClip?.getItemAt(0)?.text ?: return
+        val launchIntent: Intent? =
+            requireActivity().packageManager.getLaunchIntentForPackage("com.zhiliaoapp.musically")
+        if (launchIntent != null) {
+            startActivity(launchIntent)
+        } else {
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://play.google.com/store/apps/details?id=com.zhiliaoapp.musically")
+                )
+            )
+        }
     }
 
     fun getClipboardData(): String {
