@@ -19,6 +19,8 @@ object BaseUrlProvider {
     fun getAPIHost():String{
         return "tiktok-video-no-watermark2.p.rapidapi.com"
     }
+
+    fun getSignInId():String = "907214949757-744aukhhjt3vaasgluffdc9h37ktn23e.apps.googleusercontent.com"
     fun getInterCeptor():OkHttpClient{
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
