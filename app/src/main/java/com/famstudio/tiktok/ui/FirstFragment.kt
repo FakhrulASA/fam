@@ -1,8 +1,11 @@
 package com.famstudio.tiktok.ui
 
 import android.app.DownloadManager
-import android.content.*
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -60,15 +63,13 @@ class FirstFragment : Fragment() {
             navigateToTiktok()
         }
         binding.videosCont.setOnClickListener {
-            startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS));
+            startActivity(Intent(DownloadManager.ACTION_VIEW_DOWNLOADS))
         }
         binding.imageView.setOnClickListener {
             var getUrl = getClipboardData()
-            if (getUrl.isEmpty() || URLUtil.isValidUrl(getUrl) ) {
+            if (getUrl.isEmpty() || URLUtil.isValidUrl(getUrl)) {
                 Toast.makeText(
-                    requireContext(),
-                    "Please paste a valid tiktok video url!",
-                    Toast.LENGTH_LONG
+                    requireContext(), "Please paste a valid tiktok video url!", Toast.LENGTH_LONG
                 ).show()
             } else {
                 vm.getWeather(GetVideoRequestModel(getUrl), { data ->
@@ -137,13 +138,18 @@ class FirstFragment : Fragment() {
         }
     }
 
-    fun getClipboardData(): String {
+    private fun getClipboardData(): String {
         val clipboard = (activity?.getSystemService(Context.CLIPBOARD_SERVICE)) as? ClipboardManager
-        if(clipboard?.primaryClip?.getItemAt(0)==null){
-            return ""
-        }else{
-            var data=  clipboard?.primaryClip?.getItemAt(0)?.text as String
-            return if(data.lowercase().contains("tiktok")) data else ""
+        return if (clipboard?.primaryClip?.getItemAt(0)!= null) {
+            if (clipboard.primaryClip?.getItemAt(0)!!.text.isNullOrEmpty()) {
+                ""
+            } else {
+                val data = clipboard.primaryClip?.getItemAt(0)?.text as String
+                if (data.lowercase().contains("tiktok")) data else ""
+            }
+        } else {
+            val data = clipboard?.primaryClip?.getItemAt(0)?.text as String
+            if (data.lowercase().contains("tiktok")) data else ""
         }
     }
 }

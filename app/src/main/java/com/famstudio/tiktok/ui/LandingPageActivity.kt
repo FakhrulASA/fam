@@ -45,6 +45,7 @@ class LandingPageActivity : AppCompatActivity() {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
+            finish()
         }
         mAuth = FirebaseAuth.getInstance();
         binding.imageView12.setOnClickListener {
