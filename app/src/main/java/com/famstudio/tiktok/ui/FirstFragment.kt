@@ -139,7 +139,11 @@ class FirstFragment : Fragment() {
 
     fun getClipboardData(): String {
         val clipboard = (activity?.getSystemService(Context.CLIPBOARD_SERVICE)) as? ClipboardManager
-        var data=  clipboard?.primaryClip?.getItemAt(0)?.text as String
-        return if(data.lowercase().contains("tiktok")) data else ""
+        if(clipboard?.primaryClip?.getItemAt(0)==null){
+            return ""
+        }else{
+            var data=  clipboard?.primaryClip?.getItemAt(0)?.text as String
+            return if(data.lowercase().contains("tiktok")) data else ""
+        }
     }
 }

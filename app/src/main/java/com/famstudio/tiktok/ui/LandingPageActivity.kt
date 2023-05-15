@@ -1,7 +1,9 @@
 package com.famstudio.tiktok.ui
 
 import android.app.Activity
+import android.content.DialogInterface
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,6 +12,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.famstudio.tiktok.databinding.ActivityLandingPageBinding
+import com.famstudio.tiktok.util.*
 import com.famstudio.tiktok.util.BaseUrlProvider.getSignInId
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -18,6 +21,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -29,10 +33,19 @@ class LandingPageActivity : AppCompatActivity() {
     lateinit var mAuth: FirebaseAuth
     private var googleSignInClient: GoogleSignInClient? = null
     private val TAG = "mainTag"
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLandingPageBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        if(FirebaseAuth.getInstance().currentUser!=null){
+            var intent  = Intent(this, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            startActivity(intent)
+        }
         mAuth = FirebaseAuth.getInstance();
         binding.imageView12.setOnClickListener {
             startActivity(Intent(this,MainActivity::class.java))
@@ -79,17 +92,19 @@ class LandingPageActivity : AppCompatActivity() {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         //here we are checking the Authentication Credential and checking the task is successful or not and display the message
         //based on that.
-        mAuth.signInWithCredential(credential).addOnCompleteListener(this,
-            OnCompleteListener<AuthResult?> { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(this, "successful", Toast.LENGTH_LONG).show()
-                    val firebaseUser: FirebaseUser? = mAuth.getCurrentUser()
-                    UpdateUI(firebaseUser)
-                } else {
-                    Toast.makeText(this, "Failed!", Toast.LENGTH_LONG).show()
-                    UpdateUI(null)
-                }
-            })
+        mAuth.signInWithCredential(credential).addOnCompleteListener(this
+        ) { task ->
+            if (task.isSuccessful) {
+                val firebaseUser: FirebaseUser? = mAuth.currentUser
+                UpdateUI(firebaseUser)
+            } else {
+                showDialogMessage(
+                    this,
+                    "Signing Failed!",
+                    "Signing failed, please try again later."
+                )
+            }
+        }
     }
     private val startForResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -99,15 +114,19 @@ class LandingPageActivity : AppCompatActivity() {
             handleSignInResult(task)
         }
     }
-    //Inside UpdateUI we can get the user information and display it when required
     private fun UpdateUI(fUser: FirebaseUser?) {
         val account = GoogleSignIn.getLastSignedInAccount(applicationContext)
         if (account != null) {
-            val personName = account.displayName
-            val personGivenName = account.givenName
-            val personEmail = account.email
-            val personId = account.id
-            Toast.makeText(this, "$personName  $personEmail", Toast.LENGTH_LONG).show()
+            var sharedPreferences: SharedPreferences =
+                getSharedPreferences("MySharedPref", MODE_PRIVATE)
+            var myEdit = sharedPreferences.edit()
+            myEdit.putString(PERSON_NAME, account.displayName)
+            myEdit.putString(PERSON_GIVEN_NAME, account.givenName)
+            myEdit.putString(PERSON_EMAIL, account.email)
+            myEdit.putString(PERSON_ID, account.id)
+            myEdit.putString(PHOTO_URL, account.photoUrl.toString())
+            myEdit.apply()
+            startActivity(Intent(this,MainActivity::class.java))
         }
     }
 }
