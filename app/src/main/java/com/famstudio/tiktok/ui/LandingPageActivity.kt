@@ -1,10 +1,13 @@
 package com.famstudio.tiktok.ui
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.famstudio.tiktok.databinding.ActivityLandingPageBinding
 import com.famstudio.tiktok.util.BaseUrlProvider.getSignInId
@@ -25,7 +28,6 @@ class LandingPageActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLandingPageBinding
     lateinit var mAuth: FirebaseAuth
     private var googleSignInClient: GoogleSignInClient? = null
-    private val RESULT_CODE_SINGIN = 999
     private val TAG = "mainTag"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,18 +56,9 @@ class LandingPageActivity : AppCompatActivity() {
     private fun signInM() {
         binding.progressBar.visibility = View.VISIBLE
         val singInIntent: Intent = googleSignInClient!!.getSignInIntent()
-        startActivityForResult(singInIntent, RESULT_CODE_SINGIN)
+        startForResult.launch(singInIntent)
     }
 
-    // onActivityResult (Here we handle the result of the Activity )
-    override fun onActivityResult(requestCode: Int, resultCode: Int,  data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RESULT_CODE_SINGIN) {        //just to verify the code
-            //create a Task object and use GoogleSignInAccount from Intent and write a separate method to handle singIn Result.
-            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
-            handleSignInResult(task)
-        }
-    }
     private fun handleSignInResult(task: Task<GoogleSignInAccount>) {
 
         //we use try catch block because of Exception.
@@ -98,7 +91,14 @@ class LandingPageActivity : AppCompatActivity() {
                 }
             })
     }
-
+    private val startForResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            handleSignInResult(task)
+        }
+    }
     //Inside UpdateUI we can get the user information and display it when required
     private fun UpdateUI(fUser: FirebaseUser?) {
         val account = GoogleSignIn.getLastSignedInAccount(applicationContext)
