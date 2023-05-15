@@ -9,7 +9,11 @@
         android:id="@+id/navigation_home"
         android:name="com.famstudio.tiktok.ui.FirstFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first" />
+        tools:layout="@layout/fragment_first" >
+        <action
+            android:id="@+id/action_navigation_home_to_offerFragment"
+            app:destination="@id/offerFragment" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.famstudio.tiktok.ui.SecondFragment"
@@ -20,4 +24,8 @@
         android:name="com.famstudio.tiktok.ui.ThirdFragment"
         android:label="fragment_third"
         tools:layout="@layout/fragment_third" />
+    <fragment
+        android:id="@+id/offerFragment"
+        android:name="com.famstudio.tiktok.ui.OfferFragment"
+        android:label="OfferFragment" />
 </navigation>

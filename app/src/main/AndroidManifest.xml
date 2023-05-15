@@ -3,7 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <queries> <package android:name="com.zhiliaoapp.musically" /> </queries>
+
+    <queries>
+        <package android:name="com.zhiliaoapp.musically" />
+    </queries>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -15,11 +19,12 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".DownloadsActivity"
+            android:name=".ui.PremiumPackageActivity"
             android:exported="false" />
         <activity
-            android:name=".OfferActivity"
+            android:name=".ui.DownloadsActivity"
             android:exported="false" />
+
         <activity
             android:name=".ui.DownloadAndViewerPage"
             android:exported="true" />
